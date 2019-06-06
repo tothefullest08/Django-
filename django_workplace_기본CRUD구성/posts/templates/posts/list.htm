@@ -1,0 +1,7 @@
+{% extends 'base.htm' %}
+{% block container %}
+
+{% for post in posts %}
+    {% include 'posts/_post.htm' %}
+{% endfor %}
+{% endblock %}

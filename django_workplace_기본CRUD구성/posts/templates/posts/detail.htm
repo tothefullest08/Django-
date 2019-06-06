@@ -1,0 +1,9 @@
+{% extends 'base.htm' %}
+{% block container %}
+
+<a href="{% url 'posts:update' post.id %}">update</a>
+<a href="{% url 'posts:delete' post.id %}">delete</a>
+
+ {{ post.id}} {{post.content}}
+ 
+{% endblock %}

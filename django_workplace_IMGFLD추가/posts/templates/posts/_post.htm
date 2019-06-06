@@ -1,0 +1,4 @@
+<ul>
+    <li> <a href="{% url 'posts:detail' post.id %}">{{ post.id }}</a> - {{ post.content }} 
+    <br> <strong>생성일자</strong>: {{post.created_at }} <strong>수정일자</strong>: {{ post.updated_at }}</li>
+</ul>

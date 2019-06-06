@@ -1,0 +1,9 @@
+{% extends 'base.htm' %}
+{% block container %}
+
+<h1>리스트 페이지</h1>
+<a href="{% url 'posts:create' %}">새글쓰러가기</a>
+{% for post in posts %}
+    {% include 'posts/_post.htm' %}
+{% endfor %}
+{% endblock %}
