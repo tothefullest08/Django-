@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST, require_http_methods
 # Create your views here.
 
+@login_required
 def create(request):
     if request.method == 'POST':
         post_form = PostForm(request.POST, request.FILES)
@@ -17,8 +20,9 @@ def create(request):
     return render(request, 'posts/create.htm', {'post_form':post_form})
 
 def list(request):
-    posts = Post.objects.all()
-    return render(request, 'posts/list.htm', {'posts':posts})
+    posts = Post.objects.order_by('-id').all()
+    comment_form = CommentForm()
+    return render(request, 'posts/list.htm', {'posts':posts, 'comment_form':comment_form})
 
 def detail(request, post_id):
     post = get_object_or_404(Post, id= post_id)
@@ -47,4 +51,22 @@ def delete(request, post_id):
         redirect('posts:list')
         
     post.delete()
+    return redirect('posts:list')
+
+@require_POST
+def comment_create(request, post_id):
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.user = request.user
+        comment.post_id = post_id
+        comment.save()
+    return redirect('posts:list')
+
+@require_http_methods(['POST', 'GET'])
+def comment_delete(request, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.user != request.user:
+        return redirect('posts:list')
+    comment.delete()
     return redirect('posts:list')
