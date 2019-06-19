@@ -1,0 +1,8 @@
+{% extends 'base.htm' %}
+{% block container %}
+<form method='POST'>
+    {% csrf_token %}
+    <h1>정말로 회원탈퇴를 진행하시겠습니까?</h1>
+ <input type="submit", value="submit">
+</form>
+{% endblock %}
