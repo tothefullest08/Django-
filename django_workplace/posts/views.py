@@ -4,6 +4,7 @@ from .forms import PostForm, CommentForm, ImageFormSet
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_http_methods
 from django.db import transaction
+from itertools import chain
 # Create your views here.
 
 @login_required
@@ -28,7 +29,16 @@ def create(request):
                                         })
 
 def list(request):
-    posts = Post.objects.order_by('-id').all()
+    # followings = request.user.followings.values_list('id', flat=True)
+    followings = request.user.followings.all()
+    followings = chain(followings, [request.user])
+
+    posts = Post.objects.filter(user__in=followings).order_by('id')
+    comment_form = CommentForm()
+    return render(request, 'posts/list.htm', {'posts':posts, 'comment_form':comment_form})
+
+def explore(request):
+    posts = Post.objects.all()
     comment_form = CommentForm()
     return render(request, 'posts/list.htm', {'posts':posts, 'comment_form':comment_form})
 

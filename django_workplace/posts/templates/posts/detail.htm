@@ -10,8 +10,12 @@
 
 <div class="card" style="width: 18rem;">
     <div class="card-header">
-        <span> <a href="{% url 'accounts:people' post.user.username %}">
-                {{ post.user.username }} </a></span>
+        <span>
+            {% if post.user.profile.image %}
+            <img src="{{ post.user.profile.image.url }}" width="25"></img>
+            {% endif %}
+            <a href="{% url 'accounts:people' post.user.username %}">{{ post.user.username }} </a>
+        </span>
     </div>
     <div id="post_{{ post.id }}" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
