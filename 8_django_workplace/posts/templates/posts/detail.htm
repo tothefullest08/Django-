@@ -1,0 +1,38 @@
+{% extends 'base.htm' %}
+{% load bootstrap4 %}
+{% block container %}
+
+{% if post.user == user %}
+<a href="{% url 'posts:update' post.id %}">update</a>
+<a href="{% url 'posts:delete' post.id %}">delete</a>
+{% endif %}
+
+
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        <span>
+            {% if post.user.profile.image %}
+            <img src="{{ post.user.profile.image.url }}" width="25"></img>
+            {% endif %}
+            <a href="{% url 'accounts:people' post.user.username %}">{{ post.user.username }} </a>
+        </span>
+    </div>
+    <div id="post_{{ post.id }}" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% for image in post.image_set.all %}
+            <div class="carousel-item {% if forloop.counter == 1 %} active {% endif %}">
+                <img src="{{ image.file.url }}" class="card-img-top" alt="{{ image.file.image }}">
+            </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#post_{{ post.id }}" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#post_{{ post.id }}" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

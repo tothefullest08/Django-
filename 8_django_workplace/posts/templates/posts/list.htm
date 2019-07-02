@@ -1,0 +1,35 @@
+{% extends 'base.htm' %}
+{% block container %}
+
+<h1>리스트 페이지</h1>
+{% for post in posts %}
+    {% include 'posts/_post.htm' %}
+{% endfor %}
+
+<script>
+    const likebuttons = document.querySelectorAll('.like-button')
+    likebuttons.forEach(function(button){
+        button.addEventListener('click',function(event){
+            // console.log(event)
+            const postId = event.target.dataset.id 
+            axios.get(`/posts/${postId}/like/`)
+                .then(function(response){
+                    // console.log(response)
+
+                    document.querySelector(`#like-count-${postId}`)
+                    .innerText = response.data.count
+
+                    if (response.data.liked){
+                        event.target.classList.remove('far')
+                        event.target.classList.add('fas')
+                    } else {
+                        event.target.classList.remove('fas')
+                        event.target.classList.add('far')
+                    }
+                })
+        })
+    })
+
+</script>
+
+{% endblock %}
