@@ -4,11 +4,17 @@
         <a href="{% url 'posts:detail' post.id %}">{{ post.id }}</a> - {{ post.content }} <br> 
         <strong>생성일자</strong>: {{post.created_at }} | <strong>수정일자</strong>: {{ post.updated_at }}
     </li>
-    {% if user in post.like_users.all %}
-        <a href="{% url 'posts:like' post.id %}">좋아요 취소</a>
-    {% else %}
-        <a href="{% url 'posts:like' post.id %}">좋아요</a>
-    {% endif %}
+  
+    <a href="{% url 'posts:like' post.id %}">
+        {% if user in post.like_users.all %}
+        <!-- 좋아요 취소 -->
+        <i class="fas fa-heart"></i>
+        {% else %}
+        <!-- 좋아요 -->
+        <i class="far fa-heart"></i>
+        {% endif %}
+    </a>
+
     {{ post.like_users.count }} 명이 좋아합니다.
 </ul>   
 <ul>
