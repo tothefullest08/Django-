@@ -1,0 +1,66 @@
+{% extends 'base.htm' %}
+{% block container %}
+
+<h1>리스트 페이지</h1>
+{% for post in posts %}
+    {% include 'posts/_post.htm' %}
+{% endfor %}
+
+<script>
+    const likebuttons = document.querySelectorAll('.like-button')
+    likebuttons.forEach(function(button){
+        button.addEventListener('click',function(event){
+            // console.log(event)
+            const postId = event.target.dataset.id 
+            axios.get(`/posts/${postId}/like/`)
+                .then(function(response){
+                    // console.log(response)
+
+                    document.querySelector(`#like-count-${postId}`)
+                    .innerText = response.data.count
+
+                    if (response.data.liked){
+                        event.target.classList.remove('far')
+                        event.target.classList.add('fas')
+                    } else {
+                        event.target.classList.remove('fas')
+                        event.target.classList.add('far')
+                    }
+                })
+        })
+    })
+
+    const commentForms = document.querySelectorAll('.comment-form')
+    commentForms.forEach(function(form){
+        form.addEventListener('submit', function(event){
+            event.preventDefault()
+            console.log(event)
+            
+            const data = new FormData(event.target)
+
+            //// Inspect FormData
+            //for (const item of data.entries()){
+            //    console.log(item)
+            //} 
+
+            axios.post(event.target.action, data)
+                .then(function(response){
+                    const comment = response.data
+                    const commentList = document.querySelector(
+                        `#comment-list-${comment.postId}`
+                    )
+                    const newComment = `<li>
+                        <strong>${ comment.username }</strong> | ${ comment.content }
+                            <a href="/posts/${comment.postId}/comments/${comment.id}/delete/">댓글 삭제</a>
+                            <a href="/posts/${comment.postId}/comments/${comment.id}/update/">댓글 수정</a>
+                        </li>`
+                    commentList.insertAdjacentHTML('beforeend', newComment)
+                    event.target.reset()
+
+            })
+        })
+    })
+
+</script>
+
+{% endblock %}
